@@ -68,6 +68,14 @@ void ReorderBuffer::tick() {
   // push the trace into commit port (using this->Committed.send())
   // remove the head entry
   // HERE!
+  if (head.completed) {
+    if(head.trace->wb) {
+      core_->RAT_.set(head.trace->rd, -1);
+    }
+    this->Committed.send(head.trace);
+
+    this->pop();
+  }
 }
 
 int ReorderBuffer::allocate(pipeline_trace_t* trace) {

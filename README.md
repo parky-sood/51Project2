@@ -20,7 +20,7 @@ The project is divided into 2 parts:
 In this part, you will complete the implementation of the processor's scoreboard and re-order buffer.
 Refer to **TODO** entries inside scoreboard.cpp for where you may make your changes.
 
-## Part 3 : Gshare predictor
+## Part 2 : Gshare predictor
 In this part, you will complete the implementation of the processor's branch predictor.
 It will consist of a GShare predictor containing an 8-bit BHR and 256-entry BHT, matched with a 256-entry BTB.
 You should complete the implementation of the GShare class by implementing the predict() method.
