@@ -31,5 +31,6 @@ GShare::~GShare() {
 
 bool GShare::predict(pipeline_trace_t* trace) {
   __unused (trace);
-  return true;
+  int randomNumber = rand() % 100;
+  return (randomNumber < 75);
 }

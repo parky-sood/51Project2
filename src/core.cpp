@@ -78,7 +78,7 @@ void Core::issue() {
   if (trace == nullptr) {
     trace = emulator_.step();
     stalled_trace_ = trace;
-    if (gshare_enabled) {
+    if (trace->fu_type == FUType::ALU && trace->alu_op == AluOp::BRANCH && gshare_enabled) {
       if (!gshare_.predict(trace)) {
         issue_stalls_ = 2;
         return;
@@ -135,7 +135,7 @@ bool Core::check_exit(Word* exitcode, bool riscv_test) const {
 }
 
 bool Core::running() const {
-  return (perf_stats_.instrs != issued_instrs_);
+  return (perf_stats_.instrs != issued_instrs_) || (issued_instrs_ == 0);
 }
 
 void Core::attach_ram(RAM* ram) {
