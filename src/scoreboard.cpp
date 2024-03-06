@@ -86,13 +86,13 @@ std::vector<pipeline_trace_t*> Scoreboard::execute() {
     if(rs_entry.valid && !rs_entry.running) {
       if (rs_entry.rs1_index == -1 && rs_entry.rs2_index == -1) {
         // create a FU entry with same parameters as rs_entry
-        FunctionalUnit::entry_t fu_entry;
-        fu_entry.trace = rs_entry.trace;
-        fu_entry.rob_index = rs_entry.rob_index;
-        fu_entry.rs_index = i;
+        FunctionalUnit::entry_t fu_entry{rs_entry.trace, rs_entry.rob_index, i};
+        // fu_entry.trace = rs_entry.trace;
+        // fu_entry.rob_index = rs_entry.rob_index;
+        // fu_entry.rs_index = i;
 
         // send FU entry to corresponding FU
-        FUs[(int)rs_entry.trace->fu_type]->Input.send(fu_entry);
+        FUs[static_cast<int>(rs_entry.trace->fu_type)]->Input.send(fu_entry);
         
         // set rs_entry to running
         rs_entry.running = true;

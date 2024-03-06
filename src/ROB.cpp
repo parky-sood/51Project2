@@ -69,8 +69,8 @@ void ReorderBuffer::tick() {
   // remove the head entry
   // HERE!
   if (head.completed) {
-    if(head.trace->wb) {
-      core_->RAT_.set(head.trace->rd, -1);
+    if(head.trace->wb && (RAT.get(head.trace->rd) == head_index_)) {
+      RAT.set(head.trace->rd, -1);
     }
     this->Committed.send(head.trace);
 
