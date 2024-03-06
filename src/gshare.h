@@ -14,7 +14,6 @@
 #pragma once
 
 #include <bitset>
-#include <unordered_map>
 
 namespace tinyrv {
 
@@ -29,10 +28,7 @@ public:
   bool predict(pipeline_trace_t* trace);
 
 private:  
-  // std::bitset<8> BHR;
-  // std::unordered_map<std::bitset<30>, std::bitset<30>> BTB;
-  // std::unordered_map<uint8_t, 
-
+  std::bitset<8> BHR;
   
 };
 

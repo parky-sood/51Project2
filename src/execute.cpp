@@ -23,6 +23,7 @@
 #include <util.h>
 #include "instr.h"
 #include "core.h"
+#include "trace.h"
 #include "emulator.h"
 
 using namespace tinyrv;

@@ -18,7 +18,7 @@
 
 namespace tinyrv {
 
-class Core;
+class Scoreboard;
 
 class ReorderBuffer : public SimObject<ReorderBuffer> {
 public:
@@ -26,7 +26,7 @@ public:
   SimPort<int> Completed;
   SimPort<pipeline_trace_t*> Committed;
 
-  ReorderBuffer(const SimContext& ctx, Core* core, uint32_t size);
+  ReorderBuffer(const SimContext& ctx, Scoreboard* scoreboard, uint32_t size);
 
   ~ReorderBuffer();
 
@@ -51,7 +51,7 @@ private:
     bool completed;
   };
   
-  Core* core_;
+  Scoreboard* scoreboard_;
   std::vector<rob_entry_t> store_;
   int head_index_;
   int tail_index_;

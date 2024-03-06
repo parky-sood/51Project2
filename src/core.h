@@ -25,11 +25,7 @@
 #include "debug.h"
 #include "types.h"
 #include "emulator.h"
-#include "pipeline.h"
 #include "FU.h"
-#include "RAT.h"
-#include "ROB.h"
-#include "scoreboard.h"
 #include "gshare.h"
 
 namespace tinyrv {
@@ -37,6 +33,7 @@ namespace tinyrv {
 class ProcessorImpl;
 class Instr;
 class RAM;
+class Pipeline;
 
 class Core : public SimObject<Core> {
 public:
@@ -77,20 +74,18 @@ private:
   Emulator emulator_;
 
   std::array<FunctionalUnit::Ptr, NUM_FUS> FUs_;
-  RegisterAliasTable RAT_;
-  ReorderBuffer::Ptr ROB_;
-  Scoreboard scoreboard_;
+  Pipeline* pipeline_;
   GShare gshare_;
 
-  int issue_stalls_;
+  int branch_stalls_;
   pipeline_trace_t* stalled_trace_;
-  uint64_t issued_instrs_;
+  uint64_t fetched_instrs_;
 
   PerfStats perf_stats_;
 
   friend class Emulator;
-  friend class ReorderBuffer;
-  friend class Scoreboard;
+  friend class InorderPipeline;
+  friend class Scoreboard;  
 };
 
 } // namespace tinyrv
