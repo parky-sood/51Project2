@@ -22,6 +22,7 @@
 #include "debug.h"
 #include "types.h"
 #include "emulator.h"
+#include "trace.h"
 #include "instr.h"
 #include "core.h"
 

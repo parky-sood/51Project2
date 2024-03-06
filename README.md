@@ -12,31 +12,42 @@ The processor implementation consists of two parts:
 * The CPU emulator: decode and execute instructions to generate instruction trace.
 * The CPU simulator: Use the instruction trace to perform cycle-level simulation.
 
-You are responsible for completing the code of the scoreboard and ROB such that you can successfully execute the provided tests with the correct timing.
+You are responsible for completing the code of the out-of-order pipeline and gshare branch predictor such that you can successfully execute the provided tests with the correct timing.
 
 The project is divided into 2 parts:
 
-## Part 1 : Scoreboard
+## Part 1 : Out-of-oder pipeline
 In this part, you will complete the implementation of the processor's scoreboard and re-order buffer.
-Refer to **TODO** entries inside scoreboard.cpp for where you may make your changes.
+Refer to **TODO** entries inside scoreboard.cpp and ROB.cpp for where you should make your changes.
 
 ## Part 2 : Gshare predictor
 In this part, you will complete the implementation of the processor's branch predictor.
 It will consist of a GShare predictor containing an 8-bit BHR and 256-entry BHT, matched with a 256-entry BTB.
+Assume all counters, including the BHR to be initialized to zero at boot.
 You should complete the implementation of the GShare class by implementing the predict() method.
 Note that we are only interested in timing. 
 Your GShare's predict() method should first determine the current predicted outcome, and then update the predictor.
 also note that a successful prediction is a combination of branch direction and branch target hits.
 
 ## Testing your code
+use command line option (-s) to enable display of CPU performance stats.
+The CPU simulator was added two command line options to activate gshare (-g) or the out-of-order processor (-o).
+Not passing any option will simply enable the baseline in-order CPU pipeline without gshare.
+
 The provided Makefile contains a `test` command to execute all provided tests.
 
-    $ make test
+    $ make test     # baseline
+    $ make test-o   # ooo CPU enabled
+    $ make test-g   # gshare enabled
+    $ make test-og  # ooo CPU and gshare enabled 
 
 All tests are under the /tests/ folder.
 You can execute an individual test by running:
 
     $ ./tinyrv -s tests/rv32ui-p-sub.hex
+    $ ./tinyrv -so tests/rv32ui-p-sub.hex
+    $ ./tinyrv -sg tests/rv32ui-p-sub.hex
+    $ ./tinyrv -sog tests/rv32ui-p-sub.hex
 
 If a test succeeds, you will get "PASSED!" output message.
 
@@ -115,3 +126,22 @@ Q2: How do I use the ```dump``` files to debug my code?
 A2: The program instructions are loaded to address 0x80000000, which is also the starting value of the program counter (PC).
 You can open the dump file and search for "80000000 <_start>:" to see the first instruction that should be executed.
 follows the debugging instructions above to verify the each instruction is executing correctly.
+
+Q3: How do I know iff a branch was actually taken or not?
+A3: When a branch is taken, the PC is redirected to a new location, i.e. the nextPC was different than current PC.
+The emulator::execute() function implements all the branch instruction, including updating the PC.
+The code contains the calculation of the nextPC, you need to capture that and add it to your trace data.
+
+Q4: When do I update my branch predictor in Gshare?
+A4: You should do that at the end of the predict() function.
+You predict() function should have three parts: 
+    
+    1) Read current predictor states (BTB, BHR, BHT)    
+       You need to obtain predicted_nextPC from BTB
+       you need to obtain predicted_taken from BHR and BHT
+    2) Evaluate the prediction if correct, should return this result
+       Should match actual_taken and actual_nextPC with predicted values.
+       Note that we only match nextPC when we are predicting taken.
+    3) Update predictor states (BTB, BHR, BHT)
+       Update BTB with actual_nextPC if actual_taken is true
+       Update BHR and BHT with actual_taken status (refer to lecture slide for the algorithm)

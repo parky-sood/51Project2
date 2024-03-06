@@ -13,7 +13,7 @@ LDFLAGS +=
 
 SRCS = $(COMMON_DIR)/util.cpp $(COMMON_DIR)/mem.cpp
 SRCS += $(SRC_DIR)/main.cpp $(SRC_DIR)/processor.cpp $(SRC_DIR)/core.cpp $(SRC_DIR)/emulator.cpp $(SRC_DIR)/decode.cpp $(SRC_DIR)/execute.cpp
-SRCS += $(SRC_DIR)/FU.cpp $(SRC_DIR)/ROB.cpp $(SRC_DIR)/scoreboard.cpp $(SRC_DIR)/gshare.cpp
+SRCS += $(SRC_DIR)/inorder.cpp $(SRC_DIR)/FU.cpp $(SRC_DIR)/ROB.cpp $(SRC_DIR)/scoreboard.cpp $(SRC_DIR)/gshare.cpp
 
 # Debugigng
 ifdef DEBUG
@@ -34,6 +34,15 @@ $(DESTDIR)/$(PROJECT): $(SRCS)
 
 test: $(DESTDIR)/$(PROJECT)
 	$(MAKE) -C tests run
+	
+test-o: $(DESTDIR)/$(PROJECT)
+	$(MAKE) -C tests run-o
+
+test-g: $(DESTDIR)/$(PROJECT)
+	$(MAKE) -C tests run-g
+
+test-og: $(DESTDIR)/$(PROJECT)
+	$(MAKE) -C tests run-og
 
 submit: 
 	@echo "-- ZIPPING ALL THE FILE ---------"

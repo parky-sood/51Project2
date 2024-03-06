@@ -13,6 +13,8 @@
 
 #pragma once
 
+#include <bitset>
+
 namespace tinyrv {
 
 struct pipeline_trace_t;
@@ -26,6 +28,7 @@ public:
   bool predict(pipeline_trace_t* trace);
 
 private:  
+  std::bitset<8> BHR;
   
 };
 

@@ -15,16 +15,17 @@
 #include <assert.h>
 #include <util.h>
 #include "types.h"
-#include "core.h"
+#include "scoreboard.h"
 #include "debug.h"
+#include "ROB.h"
 
 using namespace tinyrv;
 
-ReorderBuffer::ReorderBuffer(const SimContext& ctx, Core* core, uint32_t size) 
+ReorderBuffer::ReorderBuffer(const SimContext& ctx, Scoreboard* scoreboard, uint32_t size) 
   : SimObject<ReorderBuffer>(ctx, "ReorderBuffer")
   , Completed(this)
   , Committed(this)
-  , core_(core)
+  , scoreboard_(scoreboard)
   , store_(size) {
   this->reset();
 }
@@ -47,7 +48,7 @@ void ReorderBuffer::tick() {
   if (this->is_empty())
     return;
 
-  auto& RAT = core_->RAT_;
+  auto& RAT = scoreboard_->RAT_;
   
   // check if we have a completed instruction
   if (!Completed.empty()) {
@@ -62,15 +63,15 @@ void ReorderBuffer::tick() {
   
   // TODO:
   // check if head entry has completed
-  // update the RAT if it is still pointing to this ROB entry
+  // clear the RAT if it is still pointing to this ROB entry
   // use the destination register from trace to access the RAT    
   // Warning: only update the RAT for instructions that write to the register file 
   // push the trace into commit port (using this->Committed.send())
   // remove the head entry
   // HERE!
   if (head.completed) {
-    if(head.trace->wb) {
-      core_->RAT_.set(head.trace->rd, -1);
+    if((RAT.get(head.trace->rd) == head_index_) && (head.trace->wb)) {
+      RAT.set(head.trace->rd, -1);
     }
     this->Committed.send(head.trace);
 

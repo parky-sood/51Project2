@@ -14,24 +14,17 @@
 #pragma once
 
 #include "pipeline.h"
-#include "RAT.h"
-#include "RS.h"
-#include "ROB.h"
 
 namespace tinyrv {
 
-class Core;
 struct pipeline_trace_t;
+class Core;
 
-// register status table 
-// track the mapping from ROB index and RS index
-typedef std::vector<int> RegisterStatusTable;
-
-class Scoreboard : public Pipeline {
+class InorderPipeline : public Pipeline {
 public:
-  Scoreboard(Core* core, uint32_t num_RSs, uint32_t rob_size);
+  InorderPipeline(Core* core);
 
-  ~Scoreboard();
+  ~InorderPipeline();
 
   bool issue(pipeline_trace_t* trace) override;
 
@@ -44,15 +37,10 @@ public:
   void dump() override;
 
 private:
-
-  Core* core_;
-  
-  RegisterAliasTable RAT_;  
-  ReservationStation RS_;
-  RegisterStatusTable RST_;  
-  ReorderBuffer::Ptr ROB_;
-  
-  friend class ReorderBuffer;
-};
+  Core*         core_;
+  PipelineLatch issue_latch_;
+  PipelineLatch wb_latch_;
+  RegMask       inuse_;
+};  
 
 }

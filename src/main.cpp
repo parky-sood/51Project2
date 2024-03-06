@@ -27,22 +27,26 @@
 using namespace tinyrv;
 
 static void show_usage() {
-   std::cout << "Usage: [-s: stats] [-h: help] <program>" << std::endl;
+   std::cout << "Usage: [-g: gshare] [-o: ooo] [-s: stats] [-h: help] <program>" << std::endl;
 }
 
 bool showStats = false;
 const char* program = nullptr;
 bool gshare_enabled = false;
+bool ooo_enabled = false;
 
 static void parse_args(int argc, char **argv) {
   	int c;
-  	while ((c = getopt(argc, argv, "gsh?")) != -1) {
+  	while ((c = getopt(argc, argv, "ogsh?")) != -1) {
     	switch (c) {
       case 's':
         showStats = true;
         break;
-    	case 'g':
-        gshare_enabled = false;
+    	case 'o':
+        ooo_enabled = true;
+        break;
+      case 'g':
+        gshare_enabled = true;
         break;
       case 'h':
     	case '?':
