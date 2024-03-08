@@ -34,15 +34,21 @@ bool GShare::predict(pipeline_trace_t* trace) {
   uint8_t bht_index = ((trace->PC) >> 2) ^ BHR;
   uint8_t btb_index = ((trace->PC) >> 2) & 0xFF;
   bool taken = (BHT[bht_index] >= 2) ? true : false;
-  bool actual = false;
-  Word predicted_address;
 
-  if (BTB[btb_index].TAG == ((trace->PC) >> 10)) {
-    if (BTB[btb_index].target == trace->nextPC)
-      actual = true;
+  Word predict_addr = 0xFFFFFFFF;
+  if(taken)
+  {
+    if (BTB[btb_index].TAG == ((trace->PC >> 10))) {
+      predict_addr = (BTB[btb_index].target) << 2;
+    }
   }
+  else {
+    predict_addr = trace->PC + 4;
+  }
+  
 
-  bool correct_prediction = (taken == actual) ? true : false;
+  bool actual = (trace->PC+4 != trace->nextPC) ? true : false;
+  bool correct_predict = (predict_addr == trace->nextPC) ? true : false;
 
   // update
   BHR = (BHR << 1) | actual;
@@ -54,12 +60,24 @@ bool GShare::predict(pipeline_trace_t* trace) {
     if (BHT[bht_index] > 0)
       BHT[bht_index]--;
   }
-    
-  if (correct_prediction) {
-    BTB[btb_index].target = trace->nextPC;
+  if (actual) {
+    BTB[btb_index].target = (trace->nextPC) >> 2;
     BTB[btb_index].TAG = (trace->PC) >> 10;
   }
-  
-  return correct_prediction;
+
+  return correct_predict;
 }
 
+// std::cout << "DEBUG *** GShare: BHR=0x" << std::hex << static_cast<unsigned>(BHR) 
+//           << ", PHT_index=" << std::hex << static_cast<unsigned>(bht_index)
+//           << ", PHT_taken=" << (BHT[bht_index] > 1) 
+//           << ", BTB_nextPC=0x" << std::hex << predict_addr 
+//           << ": " << *trace << std::endl;
+//   if (!taken) {
+//     std::cout << "DEBUG *** GShare: predicted not-taken=" << correct_predict 
+//           << ": " << *trace << std::endl;
+//   }
+//   else {
+// std::cout << "DEBUG *** GShare: predicted taken=" << correct_predict 
+//           << ": " << *trace << std::endl;
+//   }

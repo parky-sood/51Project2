@@ -33,9 +33,8 @@ class GShare {
 
   private:
     struct BTB_entry {
-      bool valid;
-      Word target;
-      std::bitset<22> TAG;
+      Word target = 0;
+      std::bitset<22> TAG = 0;
     };
     
     std::array<BTB_entry, SIZE> BTB;
