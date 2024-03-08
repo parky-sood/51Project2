@@ -39,7 +39,10 @@ public:
   const uint64_t uuid;
   
   // program counter
-  Word        PC; 
+  Word        PC;
+
+  // next program counter
+  Word        nextPC;
 
   // destination register
   uint32_t    rd;   
@@ -69,7 +72,8 @@ public:
 
   pipeline_trace_t(uint64_t uuid, Word PC) 
     : uuid(uuid)
-    , PC(PC)    
+    , PC(PC)
+    , nextPC(PC+4)
     , rd(0)
     , rs1(0)
     , rs2(0)
@@ -82,6 +86,7 @@ public:
   pipeline_trace_t(const pipeline_trace_t& rhs) 
     : uuid(rhs.uuid)
     , PC(rhs.PC)    
+    , nextPC(rhs.nextPC)
     , rd(rhs.rd)    
     , rs1(rhs.rs1)
     , rs2(rhs.rs2)

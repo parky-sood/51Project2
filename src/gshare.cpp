@@ -30,7 +30,36 @@ GShare::~GShare() {
 }
 
 bool GShare::predict(pipeline_trace_t* trace) {
-  __unused (trace);
-  int randomNumber = rand() % 100;
-  return (randomNumber < 75);
+  // predict
+  uint8_t bht_index = ((trace->PC) >> 2) ^ BHR;
+  uint8_t btb_index = ((trace->PC) >> 2) & 0xFF;
+  bool taken = (BHT[bht_index] >= 2) ? true : false;
+  bool actual = false;
+  Word predicted_address;
+
+  if (BTB[btb_index].TAG == ((trace->PC) >> 10)) {
+    if (BTB[btb_index].target == trace->nextPC)
+      actual = true;
+  }
+
+  bool correct_prediction = (taken == actual) ? true : false;
+
+  // update
+  BHR = (BHR << 1) | actual;
+  if (actual) {
+    if (BHT[bht_index] < 3)
+      BHT[bht_index]++;
+  }
+  else {
+    if (BHT[bht_index] > 0)
+      BHT[bht_index]--;
+  }
+    
+  if (correct_prediction) {
+    BTB[btb_index].target = trace->nextPC;
+    BTB[btb_index].TAG = (trace->PC) >> 10;
+  }
+  
+  return correct_prediction;
 }
+

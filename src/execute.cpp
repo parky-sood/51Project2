@@ -458,4 +458,5 @@ void Emulator::execute(const Instr &instr, pipeline_trace_t *trace) {
     DP(3, "*** Next PC=0x" << std::hex << next_pc << std::dec);
     PC_ = next_pc;
   }
+  trace->nextPC = PC_;
 }

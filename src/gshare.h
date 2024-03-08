@@ -15,21 +15,33 @@
 
 #include <bitset>
 
+#include "pipeline.h"
+
+#define SIZE 256
+
 namespace tinyrv {
 
 struct pipeline_trace_t;
 
 class GShare {
-public:
-  GShare();
+  public:
+    GShare();
 
-  ~GShare();
+    ~GShare();
 
-  bool predict(pipeline_trace_t* trace);
+    bool predict(pipeline_trace_t* trace);
 
-private:  
-  std::bitset<8> BHR;
-  
+  private:
+    struct BTB_entry {
+      bool valid;
+      Word target;
+      std::bitset<22> TAG;
+    };
+    
+    std::array<BTB_entry, SIZE> BTB;
+
+    uint8_t BHR;
+    std::array<int, SIZE> BHT;
 };
 
 }
