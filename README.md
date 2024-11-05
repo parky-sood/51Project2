@@ -1,4 +1,4 @@
-# M151B Project #2 : Out-of-order RISC-V CPU Simulator
+# Out-of-order RISC-V CPU Simulator
 
 **Description**:
 
