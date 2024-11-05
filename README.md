@@ -14,7 +14,7 @@ The processor implementation consists of two parts:
 The project is divided into 2 parts:
 
 ## Part 1 : Out-of-oder pipeline
-Refer to **TODO** entries inside scoreboard.cpp and ROB.cpp for where changes were made to keep track of instruction execution order and which instructions are scheduled for execution.
+A five-stage pipeline for the processor to execute instructions, and output the trace of which instructions are in the pipeline at any given time.
 
 ## Part 2 : Gshare predictor
 The processor's branch predictor is a GShare predictor containing an 8-bit BHR and 256-entry BHT, matched with a 256-entry BTB.
